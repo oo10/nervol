@@ -1,0 +1,57 @@
+<% include head.ejs %>
+<script>
+    $(function(){
+
+    });
+</script>
+<% include nav.ejs %>
+<div style="overflow:hidden;zoom:1;">
+    <div class="col-md-5 col-lg-4">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    小说详情
+                </h3>
+            </div>
+            <div class="panel-body">
+                <div class="media">
+                    <a class="pull-left" href="#">
+                        <img class="media-object" src="<%=imgurl %>"
+                             alt="媒体对象" style="width:120px;height:150px;">
+                    </a>
+                    <div class="media-body">
+                        <h4 class="media-heading"><%=novelname %></h4>
+                        <p>
+                            作者：<%=author %><br />
+                            更新：<%=lastupdatetime.toLocaleString() %><br />
+                            最新：<a href="/viewsection?sectionid=<%=sections[sections.length-1].sectionid %>"><%=lastsectionname %></a>
+                        </p>
+                        <p class="btn-group">
+                            <a href="#" class="btn btn-pink" data-toggle="modal" data-target="#myModal" role="button">
+                                加入书架
+                            </a>
+                            <a href="/viewsection?sectionid=<%=sections[0].sectionid %>" class="btn btn-default" role="button">
+                                开始阅读
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7 col-lg-8">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    小说章节
+                </h3>
+            </div>
+            <ul class="list-group">
+                <%for(var i= 0,max=sections.length;i<max;i++){%>
+                <li class="list-group-item"><a href="/viewsection?sectionid=<%=sections[i].sectionid %>"><%=sections[i].sectionname %></a></li>
+                <%}%>
+            </ul>
+        </div>
+    </div>
+</div>
+<% include footer.ejs %>

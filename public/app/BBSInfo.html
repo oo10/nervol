@@ -1,0 +1,37 @@
+
+<script>
+    var bbsInfo={};
+    bbsInfo.page=1;
+    bbsInfo.rows=10;
+    bbsInfo.total=0;
+    bbsInfo.loadding=false;
+
+    bbsInfo.getList=function(){
+        $.getJSON('/bbs?ac=search&novelinfoid='+bbs.novelinfoid+'&page='+bbsInfo.page+'&rows='+bbsInfo.rows,function(result){
+            var html='';
+            for(var i=0;i<result.rows.length;i++){
+                html+='<li class="ui-border-t" onclick="">';
+                html+='     <div class="ui-list-info">';
+                html+='         <h4  class="ui-nowrap">'+result.rows[i].title+'</h4>'
+                html+='     </div>';
+                html+='</li>';
+            }
+            $('#bbsInfoList').append(html);
+        });
+    };
+
+    bbsInfo.load=function(){
+        $(window).off('scroll');
+        bbsInfo.getList();
+
+    };
+
+    bbsInfo.load();
+</script>
+<div>
+<i class="ui-icon-prev" onclick="$('#content').load('BBS.html');" style="display:inline-block;"></i>
+<h4 style="display:inline-block;">帖子列表</h4>
+<button class="ui-btn" style="float:right;margin-top:10px;margin-right:10px;" onclick="$('#content').load('BBSInfoAdd.html');">发起主题</button>
+</div>
+<ul id="bbsInfoList" class="ui-list ui-list-link ui-border-tb">
+</ul>

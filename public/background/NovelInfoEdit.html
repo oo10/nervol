@@ -1,0 +1,76 @@
+<script>
+    $(function(){
+        var NovelInfoEdit={};
+        NovelInfoEdit.controls=function(){
+            $('#submit_NovelInfoEdit').on('click',function(){
+                $('#form_NovelInfoEdit').form('submit', {
+                    method:'post',
+                    url:'/novelinfo?ac=saveedit',
+                    onSubmit:function(){
+                        //获取当前表单是否通过验证
+                        var isValid = $(this).form('validate');
+                        if(isValid) //如果通过验证，则显示loadding组件
+                            extension.showLoadding('正在保存中。。。');
+                        return isValid; //返回验证是否通过，该值如果为false则表单不会提交
+                    },
+                    success:function(data){
+                        extension.hideLoadding();
+                        var result= $.parseJSON(data);
+                        if(result.error)
+                            $.messager.alert('保存失败',result.msg,'error');
+                        else
+                        {
+                            $(this).parent().window('close');
+                            $('#table_novelinfo').datagrid('reload');
+                            Admin.addMsg(result.msg);
+                        }
+                    }
+                });
+            });
+        };
+        //加载数据到表单
+        NovelInfoEdit.load=function(){
+            //获取datagrid选定行的数据
+            var selectRow=$('#table_novelinfo').datagrid('getSelected');
+            //将获得的选定行数据填充到表单
+            $('#form_NovelInfoEdit').form('load',selectRow);
+        };
+
+        NovelInfoEdit.init=function(){
+            NovelInfoEdit.load();
+            NovelInfoEdit.controls();
+        };
+
+        NovelInfoEdit.init();
+    });
+</script>
+<form id="form_NovelInfoEdit" method="post">
+    <input type="hidden" name="novelinfoid" />
+    <table cellpadding="5" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+            <th style="width:150px">小说名称:</th>
+            <td><input name="novelname" type="text" class="easyui-textbox" required="true" /> </td>
+        </tr>
+        <tr>
+            <th>小说分类:</th>
+            <td><input name="categoryname" type="text" class="easyui-textbox" required="true" /> </td>
+        </tr>
+        <tr>
+            <th>小说作者:</th>
+            <td><input name="author" type="text" class="easyui-textbox" /> </td>
+        </tr>
+        <tr>
+            <th>源地址:</th>
+            <td><input name="sourceurl" type="text" class="easyui-textbox" style="width:380px;" /> </td>
+        </tr>
+        <tr>
+            <th>小说描述:</th>
+            <td><input name="description" type="text" class="easyui-textbox" style="width:380px;" /> </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:center;">
+                <a id="submit_NovelInfoEdit" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+            </td>
+        </tr>
+    </table>
+</form>

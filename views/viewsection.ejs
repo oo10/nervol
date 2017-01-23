@@ -1,0 +1,54 @@
+<% include head.ejs %>
+<script>
+    $(function(){
+
+    });
+</script>
+<% include nav.ejs %>
+<div class="container">
+<div class="text-center">
+    <div class="btn-group">
+        <%if(preSectionId>0){%>
+        <a href="/viewsection?sectionid=<%=preSectionId%>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-home"></span>
+            上一章
+        </a>
+        <%}%>
+        <a href="viewnovel?novelinfoid=<%=novelinfoid %>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-th-list"></span>
+            章节目录
+        </a>
+        <%if(nextSectionId>0){%>
+        <a href="/viewsection?sectionid=<%=nextSectionId%>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search"></span>
+            下一章
+        </a>
+        <%}%>
+    </div>
+</div>
+<div>
+    <h1><%=title %></h1>
+</div>
+<div><%-sectioncontent %></div>
+    <div class="text-center">
+        <div class="btn-group">
+            <%if(preSectionId>0){%>
+            <a href="/viewsection?sectionid=<%=preSectionId%>" class="btn btn-primary">
+                <span class="glyphicon glyphicon-home"></span>
+                上一章
+            </a>
+            <%}%>
+            <a href="viewnovel?novelinfoid=<%=novelinfoid %>" class="btn btn-primary">
+                <span class="glyphicon glyphicon-th-list"></span>
+                章节目录
+            </a>
+            <%if(nextSectionId>0){%>
+            <a href="/viewsection?sectionid=<%=nextSectionId%>" class="btn btn-primary">
+                <span class="glyphicon glyphicon-search"></span>
+                下一章
+            </a>
+            <%}%>
+        </div>
+    </div>
+</div>
+<% include footer.ejs %>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>梦想小说</title>
+    <link rel="stylesheet" href="../lib/frozenui-1.3.0/css/frozen.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="../lib/frozenui-1.3.0/lib/zepto.min.js"></script>
+    <script src="../lib/frozenui-1.3.0/js/frozen.js"></script>
+    <script src="../lib/vue/vue.js"></script>
+
+</head>
+<body>
+    <header v-if="show" class="ui-header ui-header-positive ui-border-b">
+        <i v-if="isBack" class="ui-icon-return" @click="back"></i>
+        <h1>梦想小说-{{title}}</h1>
+        <button class="ui-btn" v-if="isBtn" @click="btnClick">{{btnText}}</button>
+    </header>
+    <footer id="footer1" v-if="show" class="ui-footer ui-footer-btn">
+        <ul class="ui-tiled ui-border-t">
+            <li v-for="(item,index) in buttons" class="ui-border-r" @click="btnClick(index)" :class="{current:item.isCurrent}"><i :class="item.icon"></i>{{item.text}}</li>
+        </ul>
+    </footer>
+    <footer id="footer2" v-if="show" class="ui-footer ui-footer-btn">
+        <ul class="ui-tiled ui-border-t">
+            <li v-for="(item,index) in buttons" class="ui-border-r" @click="btnClick(index)" :class="{current:item.isCurrent}"><i :class="item.icon"></i>{{item.text}}</li>
+        </ul>
+    </footer>
+    <section id="content" class="ui-container">abc</section>
+    <script>
+        var app={
+            currentNovelInfoId:0, //当前阅读的小说ID
+            currentSectionId:0, //当前读到的章节ID
+            currentContentUrl:'MyBook.html' //默认小说地址
+        };
+        if(document.cookie.indexOf('userid')<0){
+            location.href='Login.html';
+        }
+
+
+        //if($.cookies('userid'))
+
+        var myMixin = {
+            data:{
+                isLightDown:false
+            },
+            updated:function(){
+                if(this.isLightDown){
+                    $(this.$el).addClass('light-down');
+                    $(this.$el).find('*').addClass('light-down');
+                }else{
+                    if($(this.$el).hasClass('light-down')){
+                        $(this.$el).removeClass('light-down');
+                        $(this.$el).find('*').removeClass('light-down');
+                    }
+                }
+            }
+        }
+
+        var header=new Vue({
+            el:'header',
+            mixins: [myMixin],
+            data:{
+                show:true,
+                isBack:false,
+                backFun:function(){},
+                title:'我的书架',
+                isBtn:false,
+                btnText:'回首页'
+            },
+            methods:{
+                back:function(){
+                    this.backFun();
+                },
+                btnClick:function(){
+                    return 3;
+                }
+            }
+        });
+
+        var footer=new Vue({
+            el:'#footer1',
+            mixins: [myMixin],
+            data:{
+                show:true,
+                buttons:[
+                    {isCurrent:true,text:'我的书架',icon:'ui-icon-wallet',url:'MyBook.html'},
+                    {isCurrent:false,text:'发现',icon:'ui-icon-collect',url:'Descover.html'},
+                    {isCurrent:false,text:'社区',icon:'ui-icon-comment',url:'BBS.html'}
+                ]
+            },
+            methods:{
+                btnClick:function(index){
+                    for(var i= 0,max=this.buttons.length;i<max;i++){
+                        this.buttons[i].isCurrent=i===index;
+                    }
+                    content.url=this.buttons[index].url;
+                    header.title=this.buttons[index].text;
+                }
+            }
+        });
+
+        var footer2=new Vue({
+            el:'#footer2',
+            mixins: [myMixin],
+            data:{
+                show:false,
+                buttons:[
+                    {isCurrent:false,text:'关灯',icon:'ui-icon-warn',url:'MyBook.html'},
+                    {isCurrent:false,text:'放大文字',icon:'ui-icon-add',url:'Descover.html'},
+                    {isCurrent:false,text:'缩小文字',icon:'ui-icon-comment',url:'BBS.html'}
+                ]
+            },
+            methods:{
+                btnClick:function(index){
+                    switch(index){
+                        case 0:{
+                            myMixin.data.isLightDown=section.isLightDown=header.isLightDown=footer.isLightDown=footer2.isLightDown=!myMixin.data.isLightDown;
+//                            header.isLightDown=!header.isLightDown;
+//                            footer.isLightDown=!footer.isLightDown;
+//                            footer2.isLightDown=!footer2.isLightDown;
+//                            section.isLightDown=!section.isLightDown;
+                            this.buttons[0].text=myMixin.data.isLightDown?'开灯':'关灯';
+                        }
+                            break;
+                        case 1:{
+                            section.fontSize++;
+                        }
+                            break;
+                        case 2:{
+                            section.fontSize--;
+                        }
+                            break;
+                    }
+                }
+            }
+        });
+
+
+        var content=new Vue({
+            el:'#content',
+            mixins: [myMixin],
+            data:{
+                url:'MyBook.html'
+            },
+            mounted:function(){
+                $(this.$el).load(this.url);
+            }
+        });
+
+        content.$watch('url',function(newValue,oldValue){
+            $(this.$el).load(newValue);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+.ui-footer .current{color:#ffffff;background-color:#31b0d5;}
+.ui-footer [class^="ui-icon-"]{display:inline;color:#00a5e0;}
+.ui-footer .current [class^="ui-icon-"]{color:#ffffff;}
+
+.light-down{background:#000000 !important;color:#ffffff !important;border-color:#222222 !important;}

@@ -1,0 +1,30 @@
+<ul id="section-list" class="ui-list ui-list-text ui-list-link ui-border-tb">
+    <li v-for="(item,index) in rows" @tap="view(index)" class="ui-border-t">
+        <h4 class="ui-nowrap">{{item.sectionname}}</h4>
+    </li>
+</ul>
+
+<script>
+    var setcionList=new Vue({
+        mixins: [myMixin],
+        el:'#section-list',
+        data:{
+            rows:[]
+        },
+        methods:{
+            view:function(index){
+                app.currentSectionId=this.rows[index].sectionid;
+                content.url='ViewSection.html';
+            }
+        },
+        mounted:function(){
+            header.show=true;
+            footer2.show=false;
+            footer.show=true;
+            var _self=this;
+            $.getJSON('/novelsection?ac=search&page=1&rows=100000&novelinfoid='+app.currentNovelInfoId,function(data){
+                _self.rows=data.rows;
+            });
+        }
+    });
+</script>

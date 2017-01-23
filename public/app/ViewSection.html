@@ -1,0 +1,100 @@
+
+<div id="section">
+    <div style="text-align:center;">
+        <button v-if="section.preSectionId" @tap="pre" class="ui-btn ui-btn-primary">
+            上一章
+        </button>
+        <button @tap="showSectionList" class="ui-btn ui-btn-primary">
+            目录
+        </button>
+        <button v-if="section.nextSectionId" @tap="next" class="ui-btn ui-btn-primary">
+            下一章
+        </button>
+    </div>
+    <div style="padding:5px;" :style="{fontSize:fontSize+'px'}" @tap="showControl">
+        <div>{{section.sectionname}}</div>
+        <div v-html="section.sectioncontent"></div>
+    </div>
+    <div style="text-align:center;">
+        <button v-if="section.preSectionId" @tap="pre" class="ui-btn ui-btn-primary">
+        上一章
+        </button>
+        <button @tap="showSectionList" class="ui-btn ui-btn-primary">
+            目录
+        </button>
+        <button v-if="section.nextSectionId" @tap="next" class="ui-btn ui-btn-primary">
+        下一章
+        </button>
+    </div>
+</div>
+<script>
+    var section=new Vue({
+        el:'#section',
+        mixins: [myMixin],
+        data:{
+            section:{},
+            fontSize:14
+        },
+        methods:{
+            pre:function(){
+                var _self=this;
+                if (this.section.preSectionId > 0){
+                    $.getJSON('/viewsection?sectionid=' + this.section.preSectionId, function (data) {
+                        _self.section = data;
+                        document.documentElement.scrollTop=0;
+                        document.body.scrollTop=0;
+                    });
+                }
+
+            },
+            next:function(){
+                var _self=this;
+                if (this.section.nextSectionId > 0){
+                    $.getJSON('/viewsection?sectionid=' + this.section.nextSectionId, function (data) {
+                        _self.section = data;
+                        document.documentElement.scrollTop=0;
+                        document.body.scrollTop=0;
+                    });
+                }
+            },
+            showSectionList:function(){
+                content.url='SectionList.html';
+            },
+            showControl:function(){
+                header.show=!header.show;
+                footer2.show=!footer2.show;
+            }
+        },
+        mounted:function(){
+            var _self=this;
+            //获取章节内容，并且把当前小说ID改掉
+            $.getJSON('/viewsection?sectionid='+app.currentSectionId,function(data) {
+                _self.section = data;
+                app.currentNovelInfoId=data.novelinfoid;
+                localStorage.setItem('sectionId',data.sectionid);
+                localStorage.setItem('sectionName',data.sectionname);
+            });
+            header.show=true;
+            footer.show=false;
+            footer2.show=true;
+//            setTimeout(function(){
+//                header.show=false;
+//                footer2.show=false;
+//            },2000);
+        }
+    });
+
+    header.isBack=true;
+    header.backFun=function(){
+        content.url='MyBook.html';
+        header.isBack=false;
+        footer2.show=false;
+        footer.show=true;
+    };
+    footer.show=false;
+    //header.$options.methods.back=1;
+    //alert();
+    //header.$options.methods.back();
+    //alert(app.currentNovelInfoId);
+
+</script>

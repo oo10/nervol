@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>管理登录</title>
+    <link href="/lib/easyui/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="/lib/easyui/themes/gray/easyui.css" rel="stylesheet" type="text/css" />
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/lib/easyui/jquery.easyui.min.js"></script>
+    <script src="/lib/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script src="/lib/easyui/jquery.easyui.extension.js"></script>
+    <style>
+        th{text-align:right;}
+    </style>
+    <script>
+        $(function(){
+            var EasyUILogin={};
+            EasyUILogin.controls=function(){
+                $('#btn_EasyUILogin_submit').on('click',function(){
+                    $('#form_EasyUILogin_login').form('submit', {
+                        method:'post',
+                        url:'/admin?ac=login',
+                        onSubmit:function(){
+                            //获取当前表单是否通过验证
+                            var isValid = $(this).form('validate');
+                            if(isValid) //如果通过验证，则显示loadding组件
+                                extension.showLoadding('正在登录中。。。');
+                            return isValid; //返回验证是否通过，该值如果为false则表单不会提交
+                        },
+                        success:function(data){
+                            extension.hideLoadding();
+                            var result= $.parseJSON(data);
+                            if(result.error)
+                                $.messager.alert('登录失败',result.msg,'error');
+                            else
+                            {
+                                //$.messager.alert('登录成功',result.msg,'success');
+                                window.location.href='Admin.html';
+                            }
+                        }
+                    });
+                });
+            };
+
+            EasyUILogin.init=function(){
+                EasyUILogin.controls();
+            };
+
+            EasyUILogin.init();
+        });
+    </script>
+</head>
+<body>
+    <div class="easyui-window" data-options="
+        width:350,
+        height:150,
+        title:'管理登录',
+        iconCls:'icon-lock',
+        collapsible:false,
+        minimizable:false,
+        maximizable:false,
+        closable:false,
+        modal:true,
+        draggable:false,
+        resizable:false
+    " style="padding:5px;">
+        <form id="form_EasyUILogin_login" method="post">
+        <table cellspacing="0" cellpadding="5" width="100%" border="0">
+            <tr>
+                <th style="width:100px;">用户名：</th>
+                <td><input type="text" name="username" class="easyui-textbox" data-options="
+                    required:true,
+                    validType:{
+                        length:[4,10]
+                    }
+                " /> </td>
+            </tr>
+            <tr>
+                <th>密码：</th>
+                <td><input name="password" type="text" class="easyui-passwordbox" data-options="
+                    required:true,
+                    validType:{
+                        length:[6,20]
+                    }
+                " /> </td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:center;">
+                    <a id="btn_EasyUILogin_submit" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" >提交登录</a>
+                </td>
+            </tr>
+        </table>
+        </form>
+    </div>
+</body>
+</html>

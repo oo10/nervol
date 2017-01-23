@@ -1,0 +1,56 @@
+<script>
+    $(function(){
+        var NovelSection={};
+
+        NovelSection.load=function(){
+            var selectRow=$('#table_novelinfo').datagrid('getSelected');
+            $('#table_NovelSection').datagrid({
+                method:'get',
+                url:'/novelsection?ac=search&novelinfoid='+selectRow.novelinfoid,
+                fit:true,
+                border:false,
+                fitColumns:true,
+                singleSelect:true,
+                pagination:true,
+                pageSize:20,
+                toolbar:'#toolbar_NovelSection'
+            });
+        };
+
+        NovelSection.controls=function(){
+
+            $('#btn_NovelSection_add').on('click',function(){
+                Admin.openWindow({title:'添加小说章节',href:'SectionAdd.html'});
+            });
+
+            $('#btn_NovelSection_edit').on('click',function(){
+                var selectRow=$('#table_NovelSection').datagrid('getSelected');
+                if(selectRow==null){
+                    $.messager.alert('警告','您必须先选择一个小说章节','info');
+                }else {
+                    Admin.openWindow({title: '修改小说章节', href: 'SectionEdit.html'});
+                }
+            });
+        };
+
+        NovelSection.init=function(){
+            NovelSection.load();
+            NovelSection.controls();
+        };
+
+        NovelSection.init();
+    });
+</script>
+<table id="table_NovelSection">
+    <thead>
+    <tr>
+        <th data-options="field:'sectionid',width:50">章节ID</th>
+        <th data-options="field:'sectionname',width:100">章节名称</th>
+    </tr>
+    </thead>
+</table>
+<div id="toolbar_NovelSection">
+    <a id="btn_NovelSection_add" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+    <a id="btn_NovelSection_edit" href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+    <a id="btn_NovelSection_delete" href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true">删除</a>
+</div>

@@ -1,0 +1,99 @@
+<script>
+    $(function(){
+        var novelInfo={};
+        novelInfo.controls=function(){
+            $('#btn_novelinfo_add').on('click',function(){
+                Admin.openWindow({title:'添加小说',href:'NovelInfoAdd.html'});
+            });
+
+            $('#btn_novelinfo_edit').on('click',function(){
+                var selectRow=$('#table_novelinfo').datagrid('getSelected');
+                if(selectRow==null){
+                    $.messager.alert('警告','您必须先选择一本小说','info');
+                }else {
+                    Admin.openWindow({title: '修改小说', href: 'NovelInfoEdit.html'});
+                }
+            });
+
+            $('#btn_novelinfo_get').on('click',function(){
+                var selectRow=$('#table_novelinfo').datagrid('getSelected');
+                if(selectRow==null){
+                    $.messager.alert('警告','您必须先选择一本小说','info');
+                }else {
+                    extension.showLoadding('服务器正在爬取中！');
+                    $.getJSON('/novelinfo?ac=paNovel&novelinfoid='+selectRow.novelinfoid,function(result){
+                        extension.hideLoadding();
+                        if(result.error){
+                            $.messager.alert('错误',result.msg,'error');
+                        }else{
+                            $('#table_novelinfo').datagrid('reload');
+                        }
+                    });
+                }
+            });
+
+            $('#btn_novelinfo_delete').on('click',function(){
+                var selectRow=$('#table_novelinfo').datagrid('getSelected');
+                if(selectRow==null){
+                    $.messager.alert('警告','您必须先选择一本小说','info');
+                }else{
+                    $.messager.confirm('警告','您确认要删除这本小说吗？？',function(r){
+                        if(r){
+                            $.getJSON('/novelinfo?ac=delete&novelinfoid='+selectRow.novelinfoid,function(result){
+                                if(result.error){
+                                    $.messager.alert('错误',result.msg,'error');
+                                }else{
+                                    $('#table_novelinfo').datagrid('reload');
+                                    Admin.addMsg(result.msg);
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#btn_novelinfo_search').on('click',function(){
+                var novelname=$('#toolbar_novelinfo_toolbar1').find('input[name=novelname]').val();//.attr('value');
+                $('#table_novelinfo').datagrid({url:'/novelinfo?ac=search&novelname='+novelname});
+            });
+
+            $('#btn_novelinfo_manager').on('click',function(){
+                var selectRow=$('#table_novelinfo').datagrid('getSelected');
+                if(selectRow==null){
+                    $.messager.alert('警告','您必须先选择一本小说','info');
+                }else {
+                    Admin.openWindow({title: '管理小说章节', href: 'NovelSection.html'});
+                }
+            });
+        };
+
+        novelInfo.init=function(){
+            novelInfo.controls();
+        };
+
+        novelInfo.init();
+    });
+</script>
+<table id="table_novelinfo" class="easyui-datagrid" style=""
+       data-options="fit:true,singleSelect:true,pagination:true,border:false,pageSize:20,pageList:[20,100,1000],fitColumns:true,url:'/novelinfo?ac=search',method:'get',toolbar:'#toolbar_novelinfo_toolbar1'">
+    <thead>
+    <tr>
+        <th data-options="field:'novelinfoid',width:50">小说ID</th>
+        <th data-options="field:'categoryname',width:100">小说分类</th>
+        <th data-options="field:'novelname',width:100">小说名称</th>
+        <th data-options="field:'author',width:100">作者</th>
+        <th data-options="field:'lastsectionname',width:100">最新章节</th>
+        <th data-options="field:'lastupdatetime',width:100">最后更新时间</th>
+        <th data-options="field:'status',width:100">状态</th>
+    </tr>
+    </thead>
+</table>
+<div id="toolbar_novelinfo_toolbar1" style="padding:2px 5px;">
+    <a id="btn_novelinfo_manager" href="#" class="easyui-linkbutton" iconCls="icon-reload" plain="true">管理小说章节</a>
+    <a id="btn_novelinfo_get" href="#" class="easyui-linkbutton" iconCls="icon-ok" plain="true">偷取当前小说</a>
+    <a id="btn_novelinfo_add" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">添加</a>
+    <a id="btn_novelinfo_edit" href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">修改</a>
+    <a id="btn_novelinfo_delete" href="#" class="easyui-linkbutton" iconCls="icon-no" plain="true">删除</a>
+    <input name="novelname" type="text" class="easyui-textbox" />
+    <a id="btn_novelinfo_search" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true">搜索</a>
+</div>

@@ -1,0 +1,80 @@
+
+</script>
+<script>
+    var myBook={};
+    myBook.n=0;
+    myBook.getList=function(){
+        $.getJSON('/bookstore?ac=search',function(result){
+            for(var i=0;i<result.length;i++){
+                var html='';
+                html+='<li novelinfoid="'+result[i].novelinfoid+'">';
+                html+='     <div class="ui-grid-trisect-img">';
+                html+='         <img src="'+result[i].imgurl+'" />';
+                html+='     </div>'
+                html+='     <h4>'+result[i].novelname+'</h4>'
+                html+='</li>';
+                var obj=$(html);
+                obj.on('tap',function(){
+                    //先获取书架的小说阅读记录，然后再读对应章节
+                    $.getJSON('/viewsection?novelinfoid='+$(this).attr('novelinfoid'),function(data){
+                        app.currentSectionId=data.sectionId;
+                        content.url='ViewSection.html';
+                    });
+                });
+
+                obj.on('longTap',function(){
+                    var _self=$(this);
+                    var dia=$.dialog({
+                        title:'删除确认',
+                        content:'您是否将该小说从书架移除',
+                        button:["确认","取消"]
+                    });
+
+                    dia.on("dialog:action",function(e){
+                        if(e.index==0){
+                            _self.remove();
+                            $.getJSON('/bookstore?ac=delete&novelinfoid='+_self.attr('novelinfoid'));
+                        }
+                    });
+                });
+                $('#myBookList').append(obj);
+            }
+
+        });
+    };
+
+    myBook.load=function(){
+        myBook.getList();
+    };
+
+    myBook.load();
+</script>
+<div class="ui-tooltips ui-tooltips-warn">
+    <div class="ui-tooltips-cnt ui-border-b">
+        <i></i>长按将小说移出书架
+    </div>
+</div>
+<ul id="histroy" v-if="sectionId" class="ui-list ui-list-text ui-list-link ui-border-tb">
+    <li @tap="view(sectionId)">
+    <h4 class="ui-nowrap">{{sectionName}}</h4>
+    </li>
+</ul>
+<ul id="myBookList" class="ui-grid-trisect ui-border-b">
+</ul>
+<script>
+    var histroy=new Vue({
+        el:'#histroy',
+        data:{
+            sectionId:localStorage.getItem('sectionId'),
+            sectionName:localStorage.getItem('sectionName')
+        },
+        methods:{
+            view:function(sectionId){
+                app.currentSectionId=sectionId;
+                content.url='ViewSection.html';
+            }
+        },
+        mounted:function(){
+        }
+    });
+</script>

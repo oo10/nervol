@@ -1,0 +1,44 @@
+<% include head.ejs %>
+<script>
+    $(function(){
+
+    });
+</script>
+<% include nav.ejs %>
+<div class="text-center">
+    <div class="btn-group">
+        <%if(page>1){%>
+        <a href="/?page=<%=page-1%>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-home"></span>
+            上一页
+        </a>
+        <%}%>
+        <%if(isNext){%>
+        <a href="/?page=<%=page+1%>" class="btn btn-primary">
+            <span class="glyphicon glyphicon-search"></span>
+            下一页
+        </a>
+        <%}%>
+    </div>
+</div>
+<div style="overflow:hidden;zoom:1;">
+<%for(var i= 0,max=rows.length;i<max;i++){%>
+<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+    <img class="img-thumbnail" src="<%=rows[i].imgurl%>"
+         alt="<%=rows[i].novelname%>" style="width:120px;height:150px;">
+    <div class="caption">
+        <h3><%=rows[i].novelname%></h3>
+        <p style="height:100px;overflow:hidden;"><%=rows[i].description%></p>
+        <p class="btn-group">
+            <a href="/viewnovel?novelinfoid=<%=rows[i].novelinfoid %>" class="btn btn-primary" role="button">
+                查看章节
+            </a>
+            <a href="/viewsection?novelinfoid=<%=rows[i].novelinfoid %>" class="btn btn-default" role="button">
+                阅读
+            </a>
+        </p>
+    </div>
+</div>
+<%}%>
+</div>
+<% include footer.ejs %>

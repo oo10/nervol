@@ -1,0 +1,67 @@
+<script>
+    $(function(){
+        var SectionAdd={};
+
+        SectionAdd.load=function(){
+            var selectRow=$('#table_novelinfo').datagrid('getSelected');
+            $('#form_SectionAdd').find('input[name=novelinfoid]').attr('value',selectRow.novelinfoid);
+        };
+
+        SectionAdd.controls=function(){
+            $('#submit_SectionAdd').on('click',function(){
+                $('#form_SectionAdd').form('submit', {
+                    method:'post',
+                    url:'/novelsection?ac=saveadd',
+                    onSubmit:function(){
+                        //获取当前表单是否通过验证
+                        var isValid = $(this).form('validate');
+                        if(isValid) //如果通过验证，则显示loadding组件
+                            extension.showLoadding('正在保存中。。。');
+                        return isValid; //返回验证是否通过，该值如果为false则表单不会提交
+                    },
+                    success:function(data){
+                        extension.hideLoadding();
+                        var result= $.parseJSON(data);
+                        if(result.error)
+                            $.messager.alert('保存失败',result.msg,'error');
+                        else
+                        {
+                            $(this).parent().window('close');
+                            $('#table_NovelSection').datagrid('reload');
+                            Admin.addMsg(result.msg);
+                        }
+                    }
+                });
+            });
+
+            //$.getJSON
+        };
+
+        SectionAdd.init=function(){
+            SectionAdd.load();
+            SectionAdd.controls();
+        };
+
+        SectionAdd.init();
+    });
+</script>
+
+<form id="form_SectionAdd" method="post">
+    <input type="hidden" name="novelinfoid" />
+    <table cellpadding="5" cellspacing="0" border="0" style="width:100%;">
+        <tr>
+            <th style="width:150px">章节名称:</th>
+            <td><input name="sectionname" type="text" class="easyui-textbox" required="true" style="width:300px;" /> </td>
+        </tr>
+        <tr>
+            <th>章节内容:</th>
+            <td><input name="sectioncontent" type="text" class="easyui-textbox" data-options="multiline:true,width:300,height:100" style="" /> </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" style="text-align:center;">
+                <a id="submit_SectionAdd" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+            </td>
+        </tr>
+    </table>
+</form>

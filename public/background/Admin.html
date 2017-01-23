@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>管理面板</title>
+    <link href="/lib/easyui/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="/lib/easyui/themes/gray/easyui.css" rel="stylesheet" type="text/css" />
+    <script src="/js/jquery-3.1.1.min.js"></script>
+    <script src="/lib/easyui/jquery.easyui.min.js"></script>
+    <script src="/lib/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script src="/lib/easyui/jquery.easyui.extension.js"></script>
+    <script>
+        var Admin={};
+        $(function(){
+            Admin.controls=function(){
+                $('#tools_Admin_refresh').on('click',function(){
+                    //获取当前被选择的选项卡内部panel组件
+                    var currentTab = $('#tabs_Admin').tabs('getSelected');
+                    //刷新内容
+                    currentTab.panel('refresh');
+                });
+            };
+
+            Admin.load=function(){
+                Admin.addMsg('系统加载完成。。。');
+            };
+
+            Admin.msgCount=1;
+            Admin.addMsg=function(msg){
+                $('#span_Admin_msg').text(Admin.msgCount+'、'+msg);
+                $('#span_Admin_msgtime').text('('+new Date().toLocaleTimeString()+')');
+                Admin.msgCount++;
+            };
+
+            Admin.openWindow=function(options){
+                var win=$('<div></div>');
+                $('body').append(win);
+                win.window($.extend({
+                    width:600,
+                    height:400,
+                    modal:true,
+
+                    onClose:function(e){
+                        $(this).window('destroy');
+                    }
+                },options));
+            };
+
+            Admin.addTabs=function(title,url){
+                var tab=$('#tabs_Admin');
+                if(tab.tabs('exists',title))
+                    tab.tabs('select',title);
+                else{
+                    tab.tabs('add',{
+                        closable:true,
+                        title:title,
+                        loadingMessage:'页面正在加载中。。。',
+                        href:url
+                    });
+                }
+            };
+            Admin.init=function(){
+                Admin.controls();
+                Admin.load();
+            };
+
+            Admin.init();
+        });
+    </script>
+    <style>
+        th{text-align:right;}
+    </style>
+</head>
+<body>
+    <div class="easyui-layout" data-options="fit:true">
+        <div region="north" data-options="height:30">
+            <div class="easyui-layout" data-options="fit:true" style="line-height:28px;">
+                <div region="west" data-options="width:150,border:false" style="padding-left:5px;">
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-help',plain:true">梦想小说</a>
+                </div>
+                <div region="center" data-options="border:false" style="text-align:center;">
+                    <span id="span_Admin_msg" style="color:red;"></span><span id="span_Admin_msgtime" style="color:gray;"></span>
+                </div>
+                <div region="east" data-options="width:100,border:false" style="text-align:right;padding-right:5px;">
+                    <a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-no',plain:true" title="退出当前系统"></a>
+                </div>
+            </div>
+        </div>
+        <div region="west" data-options="title:'菜单栏',iconCls:'icon-windows',width:150,split:true">
+            <div class="easyui-accordion" data-options="fit:true,border:true">
+                <div data-options="title:'控制面板'">
+                    <ul class="easyui-datalist" data-options="
+                        fit: true,
+                        lines: false,
+                        border: false
+                        ">
+                        <li><a href="#" class="easyui-linkbutton" onclick="Admin.addTabs('小说管理','novelinfo.html');" data-options="iconCls:'icon-windows',plain:true">小说管理</a></li>
+                        <li><a href="#" class="easyui-linkbutton" onclick="Admin.addTabs('自定义Panel','EasyUIChild.html');" data-options="iconCls:'icon-windows',plain:true">菜单二</a></li>
+                    </ul>
+                </div>
+                <div data-options="title:'CMS管理'" style="padding:10px;">2</div>
+                <div data-options="title:'会员管理'" style="padding:10px;">3</div>
+            </div>
+        </div>
+        <div region="center">
+            <div id="tabs_Admin" class="easyui-tabs" fit="true" tools="#tab-tools" border="false">
+            </div>
+            <div id="tab-tools">
+                <a id="tools_Admin_refresh" href="#" class="easyui-linkbutton" plain="true" iconCls="icon-reload"></a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>梦想小说</title>
+    <link rel="stylesheet" href="../lib/frozenui-1.3.0/css/frozen.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="../lib/frozenui-1.3.0/lib/zepto.min.js"></script>
+    <script src="../lib/frozenui-1.3.0/js/frozen.js"></script>
+    <script src="../lib/angular/angular.min.js"></script>
+    <script src="../lib/angular/angular-cookies.min.js"></script>
+    <script>
+        (function(angular){
+            var app=angular.module('indexApp',['ngCookies']);
+            app.controller('indexCtrl',function($scope,$cookieStore){
+                $scope.userid=$cookieStore.get('userid');
+                $scope.title='首页';
+                if(typeof $scope.userid=='undefined')
+                {
+                    location.href='Login.html';
+                }
+
+                $scope.load=function(title,url){
+                    $scope.title=title;
+                    //alert($($event.target).text());
+                    var btns=$('.ui-tiled').children('li');
+                    for(var i= 0,max=btns.length;i<max;i++){
+                        //移除所有的current
+                        var btn=$(btns[i]);
+                        if(btn.hasClass('current'))
+                            btn.removeClass('current');
+                        if(btn.text()==title)
+                            btn.addClass('current');
+                    }
+                    $('#content').load(url,function(){});
+                };
+
+                $scope.load('我的书架','MyBook.html');
+            });
+
+
+        })(window.angular);
+    </script>
+</head>
+<body ng-app="indexApp" ng-controller="indexCtrl">
+    <header class="ui-header ui-header-positive ui-border-b">
+        <h1>梦想小说-{{title}}</h1>
+    </header>
+    <footer class="ui-footer ui-footer-btn">
+        <ul class="ui-tiled ui-border-t">
+            <li data-href="#" class="ui-border-r" ng-click="load('我的书架','MyBook.html');"><i class="ui-icon-wallet"></i>我的书架</li>
+            <li data-href="#" class="ui-border-r" ng-click="load('发现','Descover.html');"><i class="ui-icon-collect"></i>发现</li>
+            <li data-href="#" ng-click="load('社区','BBS.html');"><i class="ui-icon-comment"></i>社区</li>
+        </ul>
+    </footer>
+    <section id="content" class="ui-container">abc</section>
+</body>
+</html>
+        李婷 18075854603 148.5
+
+
+
+

@@ -1,0 +1,37 @@
+
+<script>
+    var bbs={};
+    bbs.novelinfoid=0;
+    bbs.showBbs=function(novelinfoid){
+        bbs.novelinfoid=novelinfoid;
+        $('#content').load('BBSInfo.html');
+    };
+
+    bbs.getList=function(){
+        $.getJSON('/bookstore?ac=search',function(result){
+            var html='';
+            for(var i=0;i<result.length;i++){
+                html+='<li class="ui-border-t" onclick="bbs.showBbs('+result[i].novelinfoid+');">';
+                html+='     <div class="ui-avatar">';
+                html+='         <img src="'+result[i].imgurl+'" />';
+                html+='     </div>'
+                html+='     <div class="ui-list-info">';
+                html+='         <h4  class="ui-nowrap">'+result[i].novelname+'</h4>'
+                html+='         <p class="ui-nowrap">作者：'+result[i].author+'</p>';
+                html+='     </div>';
+                html+='</li>';
+            }
+            $('#bbsList').append(html);
+        });
+    };
+
+    bbs.load=function(){
+        $(window).off('scroll');
+        bbs.getList();
+
+    };
+
+    bbs.load();
+</script>
+<ul id="bbsList" class="ui-list ui-list-link ui-border-tb">
+</ul>
